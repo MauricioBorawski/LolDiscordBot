@@ -11,7 +11,6 @@ module.exports = {
         .setRequired(true)
     ),
   async execute(interaction) {
-    console.log(interaction.options.getString("input"));
     await interaction.reply(`Pong!`);
   },
 };
