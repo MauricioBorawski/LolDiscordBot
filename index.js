@@ -15,6 +15,9 @@ client.once("ready", () => {
 
 client.commands = new Collection();
 
+// Set username
+client.user.setUsername('League of bots');
+
 const commandFiles = fs
   .readdirSync("./commands")
   .filter((file) => file.endsWith(".js"));
