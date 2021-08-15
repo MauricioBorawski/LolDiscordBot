@@ -4,6 +4,9 @@ const { REST } = require("@discordjs/rest");
 const { Routes } = require("discord-api-types/v9");
 const fs = require("fs");
 
+const token = process.env.NODE_ENV === "development" ? process.env.DISCORD_BETA_TOKEN : process.env.DISCORD_TOKEN;
+const userId = process.env.NODE_ENV === "development" ? process.env.USER_ID_BETA : process.env.USER_ID;
+
 const commands = [];
 const commandFiles = fs
   .readdirSync("./commands")
@@ -15,7 +18,8 @@ for (const file of commandFiles) {
 }
 
 const rest = new REST({ version: "9" }).setToken(
-  `${process.env.DISCORD_TOKEN}`
+  // Check prod or dev
+  `${token}`
 );
 
 (async () => {
@@ -24,7 +28,7 @@ const rest = new REST({ version: "9" }).setToken(
 
     await rest.put(
       Routes.applicationGuildCommands(
-        `${process.env.USER_ID}`,
+        `${userId}`,
         `${process.env.GUILD_ID}`
       ),
       //body: format JSON

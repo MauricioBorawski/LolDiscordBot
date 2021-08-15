@@ -43,4 +43,6 @@ client.on("interactionCreate", async (interaction) => {
   }
 });
 
-client.login(`${process.env.DISCORD_TOKEN}`);
+console.log(process.env.NODE_ENV);
+
+client.login(`${process.env.NODE_ENV === "development" ? process.env.DISCORD_BETA_TOKEN : process.env.DISCORD_TOKEN}`);

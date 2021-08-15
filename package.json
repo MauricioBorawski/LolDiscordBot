@@ -6,5 +6,9 @@
     "discord-api-types": "^0.22.0",
     "discord.js": "^13.1.0",
     "dotenv": "^10.0.0"
+  },
+  "scripts": {
+    "start-dev": "NODE_ENV=development node ./guildCommands.js && NODE_ENV=development node ./index.js",
+    "start-prod": "NODE_ENV=production node ./guildCommands.js && NODE_ENV=production node ./index.js"
   }
 }
