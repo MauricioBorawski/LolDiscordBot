@@ -16,7 +16,6 @@ client.once("ready", () => {
 client.commands = new Collection();
 
 // Set username
-client.user.setUsername('League of bots');
 
 const commandFiles = fs
   .readdirSync("./commands")
@@ -48,4 +47,10 @@ client.on("interactionCreate", async (interaction) => {
 
 console.log(process.env.NODE_ENV);
 
-client.login(`${process.env.NODE_ENV === "development" ? process.env.DISCORD_BETA_TOKEN : process.env.DISCORD_TOKEN}`);
+client.login(
+  `${
+    process.env.NODE_ENV === "development"
+      ? process.env.DISCORD_BETA_TOKEN
+      : process.env.DISCORD_TOKEN
+  }`
+);
