@@ -6,6 +6,8 @@ const getChampionData = require("../champions/champions");
 let championList;
 getChampionData().then((data) => (championList = data));
 
+const api_key = process.env.RIOT_API_KEY;
+
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("buscar")
@@ -24,11 +26,15 @@ module.exports = {
     const {
       data: { id, summonerLevel },
     } = await axios.get(
-      `https://la2.api.riotgames.com/lol/summoner/v4/summoners/by-name/${summoner_name}?api_key=${process.env.RIOT_API_KEY}`
+      `https://la2.api.riotgames.com/lol/summoner/v4/summoners/by-name/${summoner_name}?api_key=${api_key}`
+    );
+
+    const { data: league } = await axios.get(
+      `https://la2.api.riotgames.com/lol/league/v4/entries/by-summoner/${id}?api_key=${api_key}`
     );
 
     const { data: champs_mastery } = await axios.get(
-      `https://la2.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-summoner/${id}?api_key=${process.env.RIOT_API_KEY}`
+      `https://la2.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-summoner/${id}?api_key=${api_key}`
     );
 
     const treeFirstChampions = champs_mastery.slice(0, 3);
@@ -40,6 +46,11 @@ module.exports = {
     interaction.followUp(`\`\`\`
     Nombre de invocador: ${summoner_name} 
     Level: ${summonerLevel}
+
+    Division: ${league[0].tier} ${league[0].rank} Puntos: ${league[0].leaguePoints}
+
+    Winrate: ${Math.round((league[0].wins * 100) / (league[0].wins + league[0].losses))}% Partidas: ${league[0].wins + league[0].losses} Victorias: ${league[0].wins}
+
     Mejores champs por maestria:
     1) ${bestMasteryChampions[0].name}
     Puntos de maestria: ${treeFirstChampions[0].championPoints}
