@@ -23,6 +23,12 @@ Puntos de maestria: ${bestChamps[1].championPoints}
 
 3) ${masteryChamps[2].name}
 Puntos de maestria: ${bestChamps[2].championPoints}
-\`\`\``;
+\`\`\`
+Para informacion mas detallada usa los siguientes enlaces:
+op.gg:
+https://las.op.gg/summoner/userName=${summoner_name}
+League of Graphs:
+https://www.leagueofgraphs.com/es/summoner/las/${summoner_name.toLowerCase()}
+`;
 
 module.exports = generateSearchMessege;

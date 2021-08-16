@@ -25,7 +25,7 @@ module.exports = {
   async execute(interaction) {
     const summoner_name = interaction.options.getString("nombre_de_invocador");
 
-    interaction.reply("Buscando...");
+    interaction.reply({ content: "Buscando...", ephemeral: true });
 
     const summonerInfo = getSummonerData(summoner_name).then(
       ({ data: { id, summonerLevel: summoner_level } }) => {
@@ -58,15 +58,16 @@ module.exports = {
         { rank },
         { treeFirstChampions, bestMasteryChampions },
       ]) => {
-        interaction.followUp(
-          generateSearchMessege(
+        interaction.followUp({
+          content: generateSearchMessege(
             summoner_name,
             summoner_level,
             rank,
             bestMasteryChampions,
             treeFirstChampions
-          )
-        );
+          ),
+          ephemeral: true,
+        });
       }
     );
   },
