@@ -1,6 +1,6 @@
 require("dotenv").config();
 const { SlashCommandBuilder } = require("@discordjs/builders");
-const axios = require("axios");
+const Errors = require("../errors/errors");
 const getChampionList = require("../champions/champions");
 const getSummonerData = require("../apiCalls/summonerData");
 const getRankData = require("../apiCalls/rankData");
@@ -29,8 +29,11 @@ module.exports = {
       .then(({ data: { id, summonerLevel: summoner_level } }) => {
         return { id, summoner_level };
       })
-      .catch((error) => {
-        console.log("Error en el nombre de invocador");
+      .catch(() => {
+        Errors.setErrors({
+          type: "summoner_name_error",
+          message: "Ha habido un error en el nombre del invocador ❌",
+        });
       });
 
     const rankInfo = summonerInfo
@@ -40,9 +43,11 @@ module.exports = {
         });
       })
       .catch(() => {
-        console.log(
-          "Hubo un error tratando de conseguir los datos del invocador."
-        );
+        Errors.setErrors({
+          type: "summoner_rank_error",
+          message:
+            "Ha habido un error al tratar de conseguir los datos del invocador ❌",
+        });
       });
 
     const championMastery = summonerInfo
@@ -59,7 +64,10 @@ module.exports = {
         });
       })
       .catch(() => {
-        console.log("Hubo un error tratando de obtener las maestrias");
+        Errors.setErrors({
+          type: "summoner_name_error",
+          message: "Ha habido un error al tratar de conseguir los campeones ❌",
+        });
       });
 
     Promise.all([summonerInfo, rankInfo, championMastery])
@@ -83,7 +91,7 @@ module.exports = {
       )
       .catch(() => {
         interaction.followUp({
-          content: "El nombre de invocador no existe ❌",
+          content: Errors.errors[0].message,
           ephemeral: true,
         });
       });
