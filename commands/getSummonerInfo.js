@@ -26,9 +26,11 @@ module.exports = {
     interaction.reply({ content: "Buscando...", ephemeral: true });
 
     const summonerInfo = getSummonerData(summoner_name)
-      .then(({ data: { id, summonerLevel: summoner_level } }) => {
-        return { id, summoner_level };
-      })
+      .then(
+        ({ data: { id, summonerLevel: summoner_level, profileIconId } }) => {
+          return { id, summoner_level, profileIconId };
+        }
+      )
       .catch(() => {
         Errors.setErrors({
           type: "summoner_name_error",
@@ -65,7 +67,7 @@ module.exports = {
       })
       .catch(() => {
         Errors.setErrors({
-          type: "summoner_name_error",
+          type: "champ_mastery_error",
           message: "Ha habido un error al tratar de conseguir los campeones ❌",
         });
       });
@@ -73,27 +75,36 @@ module.exports = {
     Promise.all([summonerInfo, rankInfo, championMastery])
       .then(
         ([
-          { summoner_level },
+          { summoner_level, profileIconId },
           { rank },
           { treeFirstChampions, bestMasteryChampions },
         ]) => {
           interaction.followUp({
-            content: generateSearchMessege(
-              summoner_name,
-              summoner_level,
-              rank,
-              bestMasteryChampions,
-              treeFirstChampions
-            ),
+            embeds: [
+              generateSearchMessege(
+                summoner_name,
+                summoner_level,
+                profileIconId,
+                rank,
+                bestMasteryChampions,
+                treeFirstChampions
+              ),
+            ],
             ephemeral: true,
           });
         }
       )
-      .catch(() => {
+      .catch((error) => {
+        console.log(error);
+        Errors.setErrors({
+          type: "promise_error",
+          message: "Hubo un error al procesar los datos ❌",
+        });
         interaction.followUp({
           content: Errors.errors[0].message,
           ephemeral: true,
         });
+        Errors.resetErrors();
       });
   },
 };
