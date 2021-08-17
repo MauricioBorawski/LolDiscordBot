@@ -17,7 +17,7 @@ const generateSearchMessege = (
   const flexQ = rank.find((data) => data.queueType === "RANKED_FLEX_SR");
 
   const generateQueueForm = () => ({
-    soloQueue: [
+    soloQueue: soloQ && [
       {
         name: `Division:`,
         value: `${capitalizeFirstLetter(soloQ.tier)} ${soloQ.rank}`,
@@ -37,7 +37,7 @@ const generateSearchMessege = (
         value: `${soloQ.wins + soloQ.losses}`,
       },
     ],
-    flexQueue: [
+    flexQueue: flexQ && [
       {
         name: `Division:`,
         value: `${capitalizeFirstLetter(flexQ.tier)} ${flexQ.rank}`,
