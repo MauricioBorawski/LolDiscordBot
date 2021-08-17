@@ -16,49 +16,26 @@ const generateSearchMessege = (
   const soloQ = rank.find((data) => data.queueType === "RANKED_SOLO_5x5");
   const flexQ = rank.find((data) => data.queueType === "RANKED_FLEX_SR");
 
-  const generateQueueForm = () => ({
-    soloQueue: soloQ && [
-      {
-        name: `Division:`,
-        value: `${capitalizeFirstLetter(soloQ.tier)} ${soloQ.rank}`,
-        inline: true,
-      },
-      { name: `Puntos: `, value: `${soloQ.leaguePoints}`, inline: true },
-      {
-        name: `Winrate:`,
-        value: `${Math.round(
-          (soloQ.wins * 100) / (soloQ.wins + soloQ.losses)
-        )}%`,
-        inline: true,
-      },
-      { name: `Vicotorias:`, value: `${soloQ.wins}`, inline: true },
-      {
-        name: `Partidas:`,
-        value: `${soloQ.wins + soloQ.losses}`,
-      },
-    ],
-    flexQueue: flexQ && [
-      {
-        name: `Division:`,
-        value: `${capitalizeFirstLetter(flexQ.tier)} ${flexQ.rank}`,
-        inline: true,
-      },
-      { name: `Puntos: `, value: `${flexQ.leaguePoints}`, inline: true },
-      {
-        name: `Winrate:`,
-        value: `${Math.round(
-          (flexQ.wins * 100) / (flexQ.wins + flexQ.losses)
-        )}%`,
-        inline: true,
-      },
-      { name: `Vicotorias:`, value: `${flexQ.wins}`, inline: true },
-      {
-        name: `Partidas:`,
-        value: `${flexQ.wins + flexQ.losses}`,
-      },
-    ],
-    unranked: [{ name: "Unranked", value: "Invocador no rankeado" }],
-  });
+  const generateQueueForm = (queue) => queue !== undefined ? [
+    {
+      name: `Division:`,
+      value: `${capitalizeFirstLetter(queue.tier)} ${queue.rank}`,
+      inline: true,
+    },
+    { name: `Puntos: `, value: `${queue.leaguePoints}`, inline: true },
+    {
+      name: `Winrate:`,
+      value: `${Math.round(
+        (queue.wins * 100) / (queue.wins + queue.losses)
+      )}%`,
+      inline: true,
+    },
+    { name: `Vicotorias:`, value: `${queue.wins}`, inline: true },
+    {
+      name: `Partidas:`,
+      value: `${queue.wins + queue.losses}`,
+    },
+  ] : [{ name: "Unranked", value: "Invocador no rankeado" }]
 
   return new MessageEmbed()
     .setColor("#0099ff")
@@ -74,13 +51,13 @@ const generateSearchMessege = (
     .addFields({ name: `Level: `, value: `${summoner_level}` })
     .addFields(
       { name: "Ranked:", value: "SoloQueue" },
-      generateQueueForm()[soloQ ? "soloQueue" : "unranked"].map(
+      generateQueueForm(soloQ).map(
         (field) => field
       )
     )
     .addFields(
       { name: "Ranked:", value: "Flex Queue" },
-      generateQueueForm()[flexQ ? "flexQueue" : "unranked"].map(
+      generateQueueForm(flexQ).map(
         (field) => field
       )
     )
