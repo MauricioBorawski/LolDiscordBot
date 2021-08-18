@@ -1,6 +1,4 @@
 const { MessageEmbed } = require("discord.js");
-const { silver } = require("../ranked-emblems/ranked_emblems");
-const ranked_emblem = require("../ranked-emblems/ranked_emblems");
 
 const capitalizeFirstLetter = (string) =>
   string[0].toUpperCase() + string.slice(1).toLowerCase();
@@ -30,7 +28,7 @@ const generateSearchMessege = (
       )}%`,
       inline: true,
     },
-    { name: `Vicotorias:`, value: `${queue.wins}`, inline: true },
+    { name: `Victorias:`, value: `${queue.wins}`, inline: true },
     {
       name: `Partidas:`,
       value: `${queue.wins + queue.losses}`,
@@ -78,17 +76,6 @@ const generateSearchMessege = (
         inline: true,
       }
     )
-    .setImage(
-      `${
-        ranked_emblem[
-          soloQ !== undefined
-            ? soloQ.tier.toLowerCase()
-            : flexQ !== undefined
-            ? flexQ.tier.toLowerCase()
-            : "unranked"
-        ]
-      }`
-    );
 };
 
 module.exports = generateSearchMessege;
