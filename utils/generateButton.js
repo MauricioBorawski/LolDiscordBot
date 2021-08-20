@@ -6,8 +6,8 @@ const generateNewButton = (status_code, label) =>
       .setCustomId("primary")
       .setLabel(label)
       .setStyle("PRIMARY")
-      .setDisabled(false)
-      .setCustomId('live_game')
+      .setDisabled(status_code !== 200)
+      .setCustomId("live_game")
   );
 
 module.exports = generateNewButton;

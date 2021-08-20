@@ -109,7 +109,7 @@ module.exports = {
               ),
             ],
             ephemeral: true,
-            components: [generateNewButton(status_code, "Partida en vivo 🔎")],
+            components: [generateNewButton(status_code, "Partida en vivo 🔴")],
           });
         }
       )
