@@ -5,7 +5,9 @@ const getChampionList = require("../champions/champions");
 const getSummonerData = require("../apiCalls/summonerData");
 const getRankData = require("../apiCalls/rankData");
 const getChampMastery = require("../apiCalls/champMasteryData");
+const getSpectatorData = require("../apiCalls/spectatorInfo");
 const generateSearchMessege = require("../utils/generateSearchMessege");
+const generateNewButton = require("../utils/generateButton");
 
 let championList;
 getChampionList().then((data) => (championList = data));
@@ -52,9 +54,9 @@ module.exports = {
         });
       });
 
-    const championMastery = summonerInfo
-      .then(({ id }) => {
-        return getChampMastery(id).then(({ data: champs_mastery }) => {
+    const championMastery = summonerInfo.then(({ id }) => {
+      return getChampMastery(id)
+        .then(({ data: champs_mastery }) => {
           const treeFirstChampions = champs_mastery.slice(0, 3);
 
           const bestMasteryChampions = treeFirstChampions.map((champ) =>
@@ -63,21 +65,37 @@ module.exports = {
             )
           );
           return { treeFirstChampions, bestMasteryChampions };
+        })
+        .catch(() => {
+          Errors.setErrors({
+            type: "champ_mastery_error",
+            message:
+              "Ha habido un error al tratar de conseguir los campeones ❌",
+          });
         });
-      })
-      .catch(() => {
-        Errors.setErrors({
-          type: "champ_mastery_error",
-          message: "Ha habido un error al tratar de conseguir los campeones ❌",
-        });
-      });
+    });
 
-    Promise.all([summonerInfo, rankInfo, championMastery])
+    const spectator = summonerInfo.then(({ id }) => {
+      return getSpectatorData(id)
+        .then(({ gameId, gameType, participants, bannedChampions }) => {
+          return {
+            gameId,
+            gameType,
+            participants,
+            bannedChampions,
+            status_code: 200,
+          };
+        })
+        .catch(() => ({ status_code: 404 }));
+    });
+
+    Promise.all([summonerInfo, rankInfo, championMastery, spectator])
       .then(
         ([
           { summoner_level, profileIconId },
           { rank },
           { treeFirstChampions, bestMasteryChampions },
+          { status_code },
         ]) => {
           interaction.followUp({
             embeds: [
@@ -91,6 +109,7 @@ module.exports = {
               ),
             ],
             ephemeral: true,
+            components: [generateNewButton(status_code, "Partida en vivo 🔎")],
           });
         }
       )

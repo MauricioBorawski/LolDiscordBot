@@ -9,7 +9,7 @@
   },
   "scripts": {
     "yarn": "yarn run",
-    "yarn command": "NODE_ENV=development node ./guildCommands.js",
+    "command": "NODE_ENV=development node ./guildCommands.js",
     "start-dev": " NODE_ENV=development node ./index.js",
     "start-prod": "NODE_ENV=production node ./guildCommands.js && NODE_ENV=production node ./index.js"
   }

@@ -28,11 +28,12 @@ for (const file of commandFiles) {
 
 // client.on('interactionCreate', );
 client.on("interactionCreate", async (interaction) => {
-  if (!interaction.isCommand()) return;
+  if (!interaction.isCommand() && !interaction.isButton()) return;
 
-  if (!client.commands.has(interaction.commandName)) return;
+  if (interaction.isButton()) interaction.reply({content: "Buscando partida en vivo...", ephemeral: true});
 
   try {
+    if(interaction.commandName === "buscar")
     await client.commands.get(interaction.commandName).execute(interaction);
   } catch (error) {
     console.error(error);
@@ -45,4 +46,10 @@ client.on("interactionCreate", async (interaction) => {
 
 console.log(process.env.NODE_ENV);
 
-client.login(`${process.env.NODE_ENV === "development" ? process.env.DISCORD_BETA_TOKEN : process.env.DISCORD_TOKEN}`);
+client.login(
+  `${
+    process.env.NODE_ENV === "development"
+      ? process.env.DISCORD_BETA_TOKEN
+      : process.env.DISCORD_TOKEN
+  }`
+);
