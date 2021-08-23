@@ -6,6 +6,7 @@ const { Client, Intents, Collection } = require("discord.js");
 
 // create a new Discord client
 const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
+const { executeButtonInteraction } = require("./utils/buttonResponse");
 
 // when the client is ready, run this code
 // this event will only trigger one time after logging in
@@ -28,13 +29,12 @@ for (const file of commandFiles) {
 
 // client.on('interactionCreate', );
 client.on("interactionCreate", async (interaction) => {
-  if (!interaction.isCommand() && !interaction.isButton()) return;
-
-  if (interaction.isButton()) interaction.reply({content: "Buscando partida en vivo...", ephemeral: true});
-
   try {
-    if(interaction.commandName === "buscar")
-    await client.commands.get(interaction.commandName).execute(interaction);
+    if (interaction.commandName === "buscar")
+      await client.commands.get(interaction.commandName).execute(interaction);
+
+    if (interaction.isButton()) executeButtonInteraction(interaction);
+      
   } catch (error) {
     console.error(error);
     await interaction.reply({

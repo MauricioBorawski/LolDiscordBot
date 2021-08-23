@@ -1,6 +1,7 @@
 require("dotenv").config();
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const Errors = require("../errors/errors");
+const { setSpectatorData } = require("../utils/buttonResponse");
 const getChampionList = require("../champions/champions");
 const getSummonerData = require("../apiCalls/summonerData");
 const getRankData = require("../apiCalls/rankData");
@@ -95,8 +96,15 @@ module.exports = {
           { summoner_level, profileIconId },
           { rank },
           { treeFirstChampions, bestMasteryChampions },
-          { status_code },
+          { status_code, gameId, gameType, participants, bannedChampions },
         ]) => {
+          setSpectatorData({
+            status_code,
+            gameId,
+            gameType,
+            participants,
+            bannedChampions,
+          });
           interaction.followUp({
             embeds: [
               generateSearchMessege(
