@@ -78,15 +78,17 @@ module.exports = {
 
     const spectator = summonerInfo.then(({ id }) => {
       return getSpectatorData(id)
-        .then(({ gameId, gameType, participants, bannedChampions }) => {
-          return {
-            gameId,
-            gameType,
-            participants,
-            bannedChampions,
-            status_code: 200,
-          };
-        })
+        .then(
+          ({ data: { gameId, gameType, participants, bannedChampions } }) => {
+            return {
+              gameId,
+              gameType,
+              participants,
+              bannedChampions,
+              status_code: 200,
+            };
+          }
+        )
         .catch(() => ({ status_code: 404 }));
     });
 
@@ -104,6 +106,7 @@ module.exports = {
             gameType,
             participants,
             bannedChampions,
+            champions: championList,
           });
           interaction.followUp({
             embeds: [
