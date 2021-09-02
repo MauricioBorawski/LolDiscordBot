@@ -1,3 +1,4 @@
+const { MessageEmbed } = require("discord.js");
 let matchData = null;
 
 module.exports = {
@@ -8,15 +9,8 @@ module.exports = {
   },
   executeButtonInteraction: (interaction) => {
     if (!matchData) return;
-    const { gameType, participants, bannedChampions, champions } = matchData;
+    const { gameType, participants, champions } = matchData;
 
-    const banList = bannedChampions.map((bannedChampion) => ({
-      ...champions.find((champion) => {
-        if (bannedChampion.championId === -1) return { name: "No ban" };
-        return bannedChampion.championId.toString() === champion.key;
-      }),
-      team: bannedChampion.teamId,
-    }));
 
     const pickedChamps = participants.map((summoner) => ({
       ...champions.find(
@@ -26,52 +20,32 @@ module.exports = {
       summonerName: summoner.summonerName,
     }));
 
+    const blueTeamResponse = new MessageEmbed()
+      .setColor("BLUE")
+      .setTitle("Blue side")
+      .addFields(
+        pickedChamps
+          .filter((pick) => pick.team === 100)
+          .map((champ) => ({
+            name: champ.name,
+            value: champ.summonerName
+          }))
+      );
+
+    const redTeanResponse = new MessageEmbed()
+      .setColor("RED")
+      .setTitle("Red side")
+      .addFields(
+        pickedChamps
+          .filter((pick) => pick.team === 200)
+          .map((champ) => ({
+            name: champ.name,
+            value: champ.summonerName
+          })),
+      );
+
     interaction.reply({
-      content: `
-      ${gameType}
-      ----- Blue Team -----
-      /// Bans
-      ${banList
-        .filter((ban) => ban.team === 100)
-        .map(
-          (champion) =>
-            `
-      ${champion.name}
-      `
-        )}
-
-      /// Picks
-      ${pickedChamps
-        .filter((champ) => champ.team === 100)
-        .map(
-          (champion) =>
-            `
-      ${champion.summonerName}g:
-      ${champion.name}
-      `
-        )}
-
-      ----- Red Team -----
-      /// Bans
-      ${banList
-        .filter((ban) => ban.team === 200)
-        .map(
-          (champion) =>
-            `${champion.name}
-      `
-        )}
-      
-      /// Picks
-      ${pickedChamps
-        .filter((champ) => champ.team === 200)
-        .map(
-          (champion) =>
-            `
-      ${champion.summonerName}
-      ${champion.name}
-      `
-        )}
-      `,
+      embeds: [blueTeamResponse, redTeanResponse],
       ephemeral: true,
     });
   },
