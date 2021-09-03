@@ -11,6 +11,11 @@ module.exports = {
     if (!matchData) return;
     const { gameType, participants, champions } = matchData;
 
+    if (gameType !== "MATCHED_GAME")
+      interaction.reply({
+        content: "Lo siento, no puedo encontrar el tipo de juego.",
+        ephemeral: true,
+      });
 
     const pickedChamps = participants.map((summoner) => ({
       ...champions.find(
@@ -28,7 +33,14 @@ module.exports = {
           .filter((pick) => pick.team === 100)
           .map((champ) => ({
             name: champ.name,
-            value: champ.summonerName
+            value: `[${
+              champ.summonerName.length > 12
+                ? champ.summonerName.replace(/.{8}$/, "...")
+                : champ.summonerName
+            }](https://las.op.gg/summoner/userName=${champ.summonerName
+              .replace(/\s/, "+")
+              .replace(/\s/g, "")})`,
+            inline: true,
           }))
       );
 
@@ -40,8 +52,15 @@ module.exports = {
           .filter((pick) => pick.team === 200)
           .map((champ) => ({
             name: champ.name,
-            value: champ.summonerName
-          })),
+            value: `[${
+              champ.summonerName.length > 12
+                ? champ.summonerName.replace(/.{8}$/, "...")
+                : champ.summonerName
+            }](https://las.op.gg/summoner/userName=${champ.summonerName
+              .replace(/\s/, "+")
+              .replace(/\s/g, "")})`,
+            inline: true,
+          }))
       );
 
     interaction.reply({

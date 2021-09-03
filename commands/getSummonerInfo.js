@@ -120,7 +120,7 @@ module.exports = {
               ),
             ],
             ephemeral: true,
-            components: [generateNewButton(status_code, "Picks ")],
+            components: [generateNewButton(status_code, "Partida en vivo 🔴")],
           });
         }
       )
