@@ -14,6 +14,10 @@ export interface RankData {
     hotStreak: boolean;
 }
 
+export interface ChampionData {
+    name: string;
+    key: string;
+}
 export interface ChampionMastery {
     championId: number;
     championPoints: number;
